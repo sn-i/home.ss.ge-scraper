@@ -49,6 +49,7 @@ class Scraper:
         return all_data
 
 if __name__ == "__main__":
+    # Url only search's Tbilisi. Change if needed
     url = "https://home.ss.ge/ka/udzravi-qoneba/l/bina/iyideba?cityIdList=95&currencyId=1"
     pages_to_scrape = int(input("How many pages would you like to scrape? "))
     scraper = Scraper(url)
