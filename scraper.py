@@ -49,11 +49,3 @@ class Scraper:
                 print("Failed to retrieve the page. Status code:", response.status_code)
         return all_data
 
-if __name__ == "__main__":
-    # Url only search's Tbilisi. Change if needed
-    url = "https://home.ss.ge/ka/udzravi-qoneba/l/bina/iyideba?cityIdList=95&currencyId=1"
-    scraper = Scraper(url)
-    data = scraper.fetch_data(3)
-    df = pd.DataFrame(data)
-    df.to_csv("scraped_data.csv", index=False)
-    print("Data saved to scraped_data.csv")

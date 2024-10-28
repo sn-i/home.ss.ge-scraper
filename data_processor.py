@@ -44,25 +44,14 @@ class DataProcessor:
         plt.title("Price distribution")
         plt.xlabel("Price")
         plt.ylabel("Frequency")
-        plt.show()
+        plt.savefig("static/price_chart.png")
+        plt.close()
 
     def plot_price_per_sqm_distribution(self):
         plt.hist(self.data["Price_per_sq_meter"].dropna(), bins=20)
         plt.title("Price Per Sq Meter Distribution")
         plt.xlabel("Price per sq Meter")
         plt.ylabel("Frequency")
-        plt.show()
 
 
-if __name__ == "__main__":
-    processor = DataProcessor("scraped_data.csv")
-    processor.display_data()
 
-    print("Properties with price greater than 100,000:")
-    print(processor.filter_greater_than("Price", 100000))
-
-    print("Statistics:")
-    print(processor.calculate_statistics())
-
-    processor.plot_price_distribution()
-    processor.plot_price_per_sqm_distribution()

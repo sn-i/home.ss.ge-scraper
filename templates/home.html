@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SS.GE Real Estate Scraper</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container mt-5">
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">SS.GE Real Estate</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="showHomes">Show Homes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="showChart">Show Price Chart</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="showAdvancedData">Show Advanced Data</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Introductory Text and Form -->
+    <div id="introSection" class="mt-5">
+        <h2>SS.GE Real Estate Scraper</h2>
+        <p>Enter a link below to scrape and display data:</p>
+        <form id="scrapeForm">
+            <div class="form-group">
+                <input type="text" class="form-control" id="url" placeholder="Enter SS.GE link" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Scrape Data</button>
+        </form>
+    </div>
+
+    <!-- Data Display Section -->
+    <div id="dataContainer" class="mt-5" style="display: none;">
+        <h3>Scraped Data</h3>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Price per Sq Meter</th>
+                    <th>Price</th>
+                    <th>Listing Date</th>
+                    <th>Link</th>
+                </tr>
+            </thead>
+            <tbody id="dataBody"></tbody>
+        </table>
+    </div>
+
+    <!-- Chart Display Section -->
+    <div id="chartContainer" class="mt-5" style="display: none;">
+        <h3>Price Chart</h3>
+        <img id="priceChart" src="" alt="Price Chart" style="width:100%; display:none;">
+    </div>
+
+    <!-- Advanced Data Display Section -->
+    <div id="advancedDataContainer" class="mt-5" style="display: none;">
+        <h3>Advanced Data</h3>
+        <ul id="advancedData"></ul>
+    </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Handle form submission for scraping data
+        $('#scrapeForm').on('submit', function(e) {
+            e.preventDefault();
+            $('#introSection').hide();
+            $('#chartContainer, #advancedDataContainer').hide();
+            $('#dataContainer').show(); // Show data by default after scraping
+            $('#dataBody').html('');
+
+            $.ajax({
+                type: 'POST',
+                url: '/scrape',
+                data: { url: $('#url').val() },
+                success: function(data) {
+                    let tableBody = '';
+                    data.forEach(item => {
+                        tableBody += `
+                            <tr>
+                                <td>${item.Name}</td>
+                                <td>${item.Address}</td>
+                                <td>${item.Price_per_sq_meter}</td>
+                                <td>${item.Price}</td>
+                                <td>${item.Listing_date}</td>
+                                <td><a href="${item.Link}" target="_blank">View Listing</a></td>
+                            </tr>
+                        `;
+                    });
+                    $('#dataBody').html(tableBody);
+                }
+            });
+        });
+
+        // Show homes data when clicking "Show Homes"
+        $('#showHomes').on('click', function(e) {
+            e.preventDefault();
+            $('#chartContainer, #advancedDataContainer').hide();
+            $('#dataContainer').show();
+        });
+
+        // Show price chart when clicking "Show Chart"
+        $('#showChart').on('click', function(e) {
+            e.preventDefault();
+            $('#dataContainer, #advancedDataContainer').hide();
+            $('#chartContainer').show();
+
+            $.getJSON('/show_chart', function(data) {
+                $('#priceChart').attr('src', data.chart_url).show();
+            });
+        });
+
+        // Show advanced data when clicking "Show Advanced Data"
+        $('#showAdvancedData').on('click', function(e) {
+            e.preventDefault();
+            $('#dataContainer, #chartContainer').hide();
+            $('#advancedDataContainer').show();
+            $('#advancedData').html('');
+
+            $.getJSON('/show_advanced_data', function(stats) {
+                let statsList = `
+                    <li>Lowest Price: ${stats['Lowest Price']}</li>
+                    <li>Highest Price: ${stats['Highest Price']}</li>
+                    <li>Average Price: ${stats['Average Price']}</li>
+                    <li>Average Price per Sq Meter: ${stats['Average Price per Sq Meter']}</li>
+                `;
+                $('#advancedData').html(statsList);
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
