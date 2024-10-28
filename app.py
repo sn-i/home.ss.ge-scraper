@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, jsonify, url_for
 from scraper import Scraper
-from data_processor import DataProcessor  # Import the data processor
+from data_processor import DataProcessor
 import pandas as pd
 
 app = Flask(__name__)
@@ -31,8 +31,8 @@ def show_homes():
 @app.route('/show_chart')
 def show_chart():
     processor = DataProcessor("scraped_data.csv")
-    processor.plot_price_distribution()  # Generate and save the chart
-    chart_url = url_for('static', filename='price_chart.png')  # Create URL for the chart
+    processor.plot_price_distribution()
+    chart_url = url_for('static', filename='price_chart.png')
     return jsonify({"chart_url": chart_url})
 
 @app.route('/show_advanced_data')
