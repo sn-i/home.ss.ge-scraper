@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-
+import pandas as pd
 
 class Scraper:
     def __init__(self, url):
@@ -36,11 +36,12 @@ class Scraper:
 
                     all_data.append({
                         'Name': name,
-                        'Price': price,
-                        'Price_per_sq_meter': price_per_sq_meter,
                         'Address': address,
+                        'Price_per_sq_meter': price_per_sq_meter,
+                        'Price': price,
                         'Listing_date': listed,
                         'Link': full_link
+
 
                     })
 
@@ -51,7 +52,8 @@ class Scraper:
 if __name__ == "__main__":
     # Url only search's Tbilisi. Change if needed
     url = "https://home.ss.ge/ka/udzravi-qoneba/l/bina/iyideba?cityIdList=95&currencyId=1"
-    pages_to_scrape = int(input("How many pages would you like to scrape? "))
     scraper = Scraper(url)
-    data = scraper.fetch_data(pages_to_scrape)
-    print(data)
+    data = scraper.fetch_data(3)
+    df = pd.DataFrame(data)
+    df.to_csv("scraped_data.csv", index=False)
+    print("Data saved to scraped_data.csv")
