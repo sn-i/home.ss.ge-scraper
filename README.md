@@ -21,7 +21,7 @@ Ensure you have the following installed:
 1. **Clone the Repository**:
 
    ```bash
-   git clone https://github.com/YOUR_USERNAME/home.ss.ge-scraper.git
+   git clone https://github.com/sn-i/home.ss.ge-scraper.git
    cd home.ss.ge-scraper
    python app.py
 
